@@ -9,7 +9,15 @@ class Carta {
 		$this->palo = $palo;
 	}
 
-	private function getNumero() {
+	public function getNumero() {
+		return $this->numero;
+	}
+
+	public function getPalo() {
+		return $this->palo;
+	}
+
+	private function nombrarNumero() {
 		switch($this->numero) {
 
 			case 1:
@@ -31,10 +39,6 @@ class Carta {
 			default:
 				return $this->numero;
 		}
-	}
-
-	public function getPalo() {
-		return $this->palo;
 	}
 
 	private function nombrarPalo() {
@@ -59,7 +63,7 @@ class Carta {
 	}
 
 	public function ver() {
-		echo($this->getNumero() . ' de ' . $this->nombrarPalo() . '<br />');
+		echo($this->nombrarNumero() . ' de ' . $this->nombrarPalo() . '<br />');
 	}
 }
 ?>

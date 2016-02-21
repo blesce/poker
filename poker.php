@@ -1,4 +1,5 @@
 <?php
+include('debug.php');
 
 define('A', 1);
 define('J', 11);
@@ -42,6 +43,7 @@ foreach($jugadores as $jugador) {
 
 	$cartas = array_merge($mesa->getCartas(), $jugador->getCartas());
 	$color = $dealer->buscarColor($cartas);
+	// $escalera = $dealer->buscarEscalera($cartas);
 
 	$jugador->mostrarNombre($color);
 	$jugador->mostrarCartas();

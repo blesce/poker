@@ -50,10 +50,5 @@ class Mazo {
 	public function turn() {
 		return $this->repartir(1);
 	}
-	// public function __ver() {
-	// 	for($i = 0; $i < count($this->cartas); $i++) {
-	// 		echo($this->cartas[$i]->getValor() . '<br />');
-	// 	}
-	// }
 }
 ?>

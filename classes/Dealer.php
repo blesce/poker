@@ -11,9 +11,7 @@ class Dealer {
 
 	public function buscarColor($cartas) {
 
-		if(count($cartas) !== 7) {
-			throw new Exception('No son 7 cartas');
-		}
+		$this->contarCartas($cartas, 7);
 
 		foreach($cartas as $carta) {
 			$stack[$carta->getPalo()][] = $carta;
@@ -21,13 +19,24 @@ class Dealer {
 
 		foreach($stack as $palo => $cartas) {
 			if(count($cartas) >= 5) {
-				// rsort($stack[$palo]);
-				// return reset(array_chunk($stack, 5));
-				return true;
+				usort($cartas, function($a, $b) {
+					return ($a->getNumero() > $b->getNumero()) ? 1 : -1;
+				});
+				if(reset($cartas)->getNumero() === 1) {
+					$cartas[] = array_shift($cartas);
+				}
+				return array_reverse($cartas);
 			}
 		}
 
 		return false;
+	}
+
+	public function buscarEscalera($cartas) {
+
+		$this->contarCartas($cartas, 7);
+
+		// Sin implementar
 	}
 
 	public function cartasComunitarias() {
@@ -40,6 +49,13 @@ class Dealer {
 
 		$this->mazo->quemarCarta();
 		$this->mesa->recibirCartas($this->mazo->river());
+	}
+
+	private function contarCartas($cartas, $cantidad) {
+		if(count($cartas) === $cantidad) {
+			return true;
+		}
+		throw new Exception('No son ' . $cantidad . ' cartas');
 	}
 
 	public function repartir($cartasPorJugador) {
