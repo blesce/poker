@@ -3,7 +3,7 @@ class Mazo {
 
 	private $cartas = [];
 
-	public function __construct($mezclado) {
+	public function __construct($mezclado = false) {
 
 		for($i = 0; $i < 4; $i++) {
 			for($j = 1; $j <= 13; $j++) {

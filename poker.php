@@ -1,16 +1,7 @@
 <?php
 include('debug.php');
 
-define('A', 1);
-define('J', 11);
-define('Q', 12);
-define('K', 13);
-
-define('CORAZON', 0);
-define('DIAMANTE', 1);
-define('PICA', 2);
-define('TREBOL', 3);
-
+include_once('define.php');
 include_once('classes/Carta.php');
 include_once('classes/Dealer.php');
 include_once('classes/Jugador.php');
@@ -42,11 +33,17 @@ $jugadores = $mesa->getJugadores();
 foreach($jugadores as $jugador) {
 
 	$cartas = array_merge($mesa->getCartas(), $jugador->getCartas());
-	$color = $dealer->buscarColor($cartas);
-	// $escalera = $dealer->buscarEscalera($cartas);
+	list($mejores, $juego) = $dealer->elegirMejores($cartas);
 
-	$jugador->mostrarNombre($color);
+	$jugador->mostrarNombre($juego);
+	echo('<br />');
 	$jugador->mostrarCartas();
+	foreach($mejores as $carta) {
+		$carta->ver(true);
+		echo(' ');
+	}
+	echo('<br />');
+	echo('<br />');
 }
 
 // $ganadores = $mesa->buscarGanadores();

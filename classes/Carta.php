@@ -62,8 +62,12 @@ class Carta {
 		}
 	}
 
-	public function ver() {
-		echo($this->nombrarNumero() . ' de ' . $this->nombrarPalo() . '<br />');
+	public function ver($abreviado = false) {
+		if($abreviado) {
+			echo($this->nombrarNumero() . strtoupper(substr($this->nombrarPalo(), 0, 1)));
+		} else {
+			echo($this->nombrarNumero() . ' de ' . $this->nombrarPalo() . '<br />');
+		}
 	}
 }
 ?>

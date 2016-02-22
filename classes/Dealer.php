@@ -1,6 +1,7 @@
 <?php
 class Dealer {
 
+	private $cartas;
 	private $mazo;
 	private $mesa;
 
@@ -9,34 +10,117 @@ class Dealer {
 		$this->mesa = $mesa;
 	}
 
-	public function buscarColor($cartas) {
+	private function buscarColor() {
 
-		$this->contarCartas($cartas, 7);
-
-		foreach($cartas as $carta) {
+		foreach($this->cartas as $carta) {
 			$stack[$carta->getPalo()][] = $carta;
 		}
 
 		foreach($stack as $palo => $cartas) {
 			if(count($cartas) >= 5) {
-				usort($cartas, function($a, $b) {
-					return ($a->getNumero() > $b->getNumero()) ? 1 : -1;
-				});
-				if(reset($cartas)->getNumero() === 1) {
-					$cartas[] = array_shift($cartas);
-				}
-				return array_reverse($cartas);
+				return array_slice($cartas, 0, 5);
 			}
 		}
 
 		return false;
 	}
 
-	public function buscarEscalera($cartas) {
+	private function buscarJuego($juego) {
+		switch($juego) {
 
-		$this->contarCartas($cartas, 7);
+			case ESCALERA_REAL:
+				// return $this->buscarEscaleraReal();
+				return false;
+			break;
 
-		// Sin implementar
+			case POKER:
+				// return $this->buscarPoker();
+				return false;
+			break;
+
+			case FULL_HOUSE:
+				// return $this->buscarFullHouse();
+				return false;
+			break;
+
+			case COLOR:
+				return $this->buscarColor();
+			break;
+
+			case ESCALERA:
+				return $this->buscarEscalera();
+			break;
+
+			case PIERNA:
+				// return $this->buscarPierna();
+				return false;
+			break;
+
+			case PARES:
+				// return $this->buscarPares();
+				return false;
+			break;
+
+			case PAR:
+				// return $this->buscarPar();
+				return false;
+			break;
+
+			case CARTA_ALTA:
+				// return $this->buscarCartaAlta();
+				return false;
+			break;
+
+			default: // Quitar
+				return array_slice($this->cartas, 0, 5);
+		}
+	}
+
+	private function buscarEscalera() {
+
+		$cartas = [];
+
+		foreach($this->cartas as $carta) {
+
+			if(!count($cartas)) {
+				$cartas[] = $carta;
+				continue;
+			}
+
+			$last = end($cartas);
+
+			if($carta->getNumero() === $last->getNumero()) {
+				continue;
+			}
+
+			$numero = $last->getNumero();
+
+			if($numero === 1) {
+				$numero = 14;
+				$as = $last;
+			}
+
+			if($carta->getNumero() === $numero - 1) {
+
+				$cartas[] = $carta;
+
+				if(count($cartas) === 5) {
+					return $cartas;
+				} elseif(count($cartas) === 4) {
+
+					$first = reset($cartas);
+
+					if($first->getNumero() === 5 && isset($as)) {
+						$cartas[] = $as;
+						return $cartas;
+					}
+				}
+			} else {
+				$cartas = [$carta];
+			}
+		}
+
+		return false;
 	}
 
 	public function cartasComunitarias() {
@@ -51,11 +135,41 @@ class Dealer {
 		$this->mesa->recibirCartas($this->mazo->river());
 	}
 
-	private function contarCartas($cartas, $cantidad) {
-		if(count($cartas) === $cantidad) {
-			return true;
+	public function elegirMejores($cartas) {
+
+		if(count($cartas) !== 7) {
+			throw new Exception('No son 7 cartas');
 		}
-		throw new Exception('No son ' . $cantidad . ' cartas');
+
+		usort($cartas, function($a, $b) {
+			if($a->getNumero() > $b->getNumero()) {
+				return 1;
+			} elseif($a->getNumero() < $b->getNumero()) {
+				return -1;
+			} elseif($a->getPalo() < $b->getPalo()) {
+				return 1;
+			} else {
+				return -1;
+			}
+		});
+
+		while(reset($cartas)->getNumero() === 1) {
+			$cartas[] = array_shift($cartas);
+		}
+
+		$this->cartas = array_reverse($cartas);
+
+		$mejores = false;
+		while(!$mejores) {
+
+			if(!isset($juego)) {
+				$juego = ESCALERA_REAL;
+			}
+
+			$mejores = $this->buscarJuego($juego++);
+		}
+
+		return [$mejores, --$juego];
 	}
 
 	public function repartir($cartasPorJugador) {
