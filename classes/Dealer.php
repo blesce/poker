@@ -94,6 +94,32 @@ class Dealer {
 		return false;
 	}
 
+	private function buscarFullHouse() {
+
+		$fullHouse = [];
+
+		foreach($this->cartas as $carta) {
+			$stack[$carta->getNumero()][] = $carta;
+		}
+
+		foreach($stack as $numero => $cartas) {
+			if(count($cartas) === 3) {
+				$fullHouse = $cartas;
+			}
+		}
+
+		if(count($fullHouse)) {
+			foreach($stack as $numero => $cartas) {
+				if(count($cartas) === 2) {
+					$fullHouse = array_merge($fullHouse, $cartas);
+					return $fullHouse;
+				}
+			}
+		}
+
+		return false;
+	}
+
 	private function buscarJuego($juego) {
 		switch($juego) {
 
@@ -106,8 +132,7 @@ class Dealer {
 			break;
 
 			case FULL_HOUSE:
-				// return $this->buscarFullHouse();
-				return false;
+				return $this->buscarFullHouse();
 			break;
 
 			case COLOR:
@@ -134,12 +159,8 @@ class Dealer {
 			break;
 
 			case CARTA_ALTA:
-				// return $this->buscarCartaAlta();
-				return false;
-			break;
-
-			default: // Quitar
 				return array_slice($this->cartas, 0, 5);
+			break;
 		}
 	}
 
