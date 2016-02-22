@@ -25,56 +25,6 @@ class Dealer {
 		return false;
 	}
 
-	private function buscarJuego($juego) {
-		switch($juego) {
-
-			case ESCALERA_REAL:
-				return $this->buscarEscaleraReal();
-			break;
-
-			case POKER:
-				// return $this->buscarPoker();
-				return false;
-			break;
-
-			case FULL_HOUSE:
-				// return $this->buscarFullHouse();
-				return false;
-			break;
-
-			case COLOR:
-				return $this->buscarColor();
-			break;
-
-			case ESCALERA:
-				return $this->buscarEscalera();
-			break;
-
-			case PIERNA:
-				// return $this->buscarPierna();
-				return false;
-			break;
-
-			case PARES:
-				// return $this->buscarPares();
-				return false;
-			break;
-
-			case PAR:
-				// return $this->buscarPar();
-				return false;
-			break;
-
-			case CARTA_ALTA:
-				// return $this->buscarCartaAlta();
-				return false;
-			break;
-
-			default: // Quitar
-				return array_slice($this->cartas, 0, 5);
-		}
-	}
-
 	private function buscarEscalera($cartas = false) {
 
 		if(!$cartas) {
@@ -137,6 +87,75 @@ class Dealer {
 				$escaleraReal = $this->buscarEscalera($cartas);
 				if($escaleraReal) {
 					return $escaleraReal;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	private function buscarJuego($juego) {
+		switch($juego) {
+
+			case ESCALERA_REAL:
+				return $this->buscarEscaleraReal();
+			break;
+
+			case POKER:
+				return $this->buscarPoker();
+			break;
+
+			case FULL_HOUSE:
+				// return $this->buscarFullHouse();
+				return false;
+			break;
+
+			case COLOR:
+				return $this->buscarColor();
+			break;
+
+			case ESCALERA:
+				return $this->buscarEscalera();
+			break;
+
+			case PIERNA:
+				// return $this->buscarPierna();
+				return false;
+			break;
+
+			case PARES:
+				// return $this->buscarPares();
+				return false;
+			break;
+
+			case PAR:
+				// return $this->buscarPar();
+				return false;
+			break;
+
+			case CARTA_ALTA:
+				// return $this->buscarCartaAlta();
+				return false;
+			break;
+
+			default: // Quitar
+				return array_slice($this->cartas, 0, 5);
+		}
+	}
+
+	private function buscarPoker() {
+
+		foreach($this->cartas as $carta) {
+			$stack[$carta->getNumero()][] = $carta;
+		}
+
+		foreach($stack as $numero => $cartas) {
+			if(count($cartas) === 4) {
+				foreach($this->cartas as $carta) {
+					if($carta->getNumero() !== $numero) {
+						$cartas[] = $carta;
+						return $cartas;
+					}
 				}
 			}
 		}
