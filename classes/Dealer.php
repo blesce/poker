@@ -153,14 +153,35 @@ class Dealer {
 			break;
 
 			case PAR:
-				// return $this->buscarPar();
-				return false;
+				return $this->buscarPar();
 			break;
 
 			case CARTA_ALTA:
 				return array_slice($this->cartas, 0, 5);
 			break;
 		}
+	}
+
+	private function buscarPar() {
+
+		foreach($this->cartas as $carta) {
+			$stack[$carta->getNumero()][] = $carta;
+		}
+
+		foreach($stack as $numero => $cartas) {
+			if(count($cartas) === 2) {
+				foreach($this->cartas as $carta) {
+					if($carta->getNumero() !== $numero) {
+						$cartas[] = $carta;
+						if(count($cartas) === 5) {
+							return $cartas;
+						}
+					}
+				}
+			}
+		}
+
+		return false;
 	}
 
 	private function buscarPares() {
@@ -171,7 +192,7 @@ class Dealer {
 			$stack[$carta->getNumero()][] = $carta;
 		}
 
-		foreach($stack as $numero => $cartas) {
+		foreach($stack as $cartas) {
 			if(count($cartas) === 2) {
 				$pares = array_merge($pares, $cartas);
 				if(count($pares) === 4) {
