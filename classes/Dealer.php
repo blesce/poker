@@ -105,6 +105,7 @@ class Dealer {
 		foreach($stack as $numero => $cartas) {
 			if(count($cartas) === 3) {
 				$fullHouse = $cartas;
+				break;
 			}
 		}
 
@@ -148,8 +149,7 @@ class Dealer {
 			break;
 
 			case PARES:
-				// return $this->buscarPares();
-				return false;
+				return $this->buscarPares();
 			break;
 
 			case PAR:
@@ -161,6 +161,31 @@ class Dealer {
 				return array_slice($this->cartas, 0, 5);
 			break;
 		}
+	}
+
+	private function buscarPares() {
+
+		$pares = [];
+
+		foreach($this->cartas as $carta) {
+			$stack[$carta->getNumero()][] = $carta;
+		}
+
+		foreach($stack as $numero => $cartas) {
+			if(count($cartas) === 2) {
+				$pares = array_merge($pares, $cartas);
+				if(count($pares) === 4) {
+					foreach($this->cartas as $carta) {
+						if($carta->getNumero() !== $pares[0]->getNumero() && $carta->getNumero() !== $pares[2]->getNumero()) {
+							$pares[] = $carta;
+							return $pares;
+						}
+					}
+				}
+			}
+		}
+
+		return false;
 	}
 
 	private function buscarPierna() {
