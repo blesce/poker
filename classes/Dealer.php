@@ -29,8 +29,7 @@ class Dealer {
 		switch($juego) {
 
 			case ESCALERA_REAL:
-				// return $this->buscarEscaleraReal();
-				return false;
+				return $this->buscarEscaleraReal();
 			break;
 
 			case POKER:
@@ -76,18 +75,22 @@ class Dealer {
 		}
 	}
 
-	private function buscarEscalera() {
+	private function buscarEscalera($cartas = false) {
 
-		$cartas = [];
+		if(!$cartas) {
+			$cartas = $this->cartas;
+		}
 
-		foreach($this->cartas as $carta) {
+		$escalera = [];
 
-			if(!count($cartas)) {
-				$cartas[] = $carta;
+		foreach($cartas as $carta) {
+
+			if(!count($escalera)) {
+				$escalera[] = $carta;
 				continue;
 			}
 
-			$last = end($cartas);
+			$last = end($escalera);
 
 			if($carta->getNumero() === $last->getNumero()) {
 				continue;
@@ -102,21 +105,39 @@ class Dealer {
 
 			if($carta->getNumero() === $numero - 1) {
 
-				$cartas[] = $carta;
+				$escalera[] = $carta;
 
-				if(count($cartas) === 5) {
-					return $cartas;
-				} elseif(count($cartas) === 4) {
+				if(count($escalera) === 5) {
+					return $escalera;
+				} elseif(count($escalera) === 4) {
 
-					$first = reset($cartas);
+					$first = reset($escalera);
 
 					if($first->getNumero() === 5 && isset($as)) {
-						$cartas[] = $as;
-						return $cartas;
+						$escalera[] = $as;
+						return $escalera;
 					}
 				}
 			} else {
-				$cartas = [$carta];
+				$escalera = [$carta];
+			}
+		}
+
+		return false;
+	}
+
+	private function buscarEscaleraReal() {
+
+		foreach($this->cartas as $carta) {
+			$stack[$carta->getPalo()][] = $carta;
+		}
+
+		foreach($stack as $palo => $cartas) {
+			if(count($cartas) >= 5) {
+				$escaleraReal = $this->buscarEscalera($cartas);
+				if($escaleraReal) {
+					return $escaleraReal;
+				}
 			}
 		}
 
