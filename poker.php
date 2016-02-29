@@ -56,9 +56,8 @@ while(true) {
 		foreach($jugadores as $jugador) {
 			if($jugador->getJuego() === 3) {
 				$ccc++;
-				if($ccc > 1 && count($ganadores) > 1) {
+				if($ccc > 1 && count($ganadores) === 1) {
 					ob_end_flush();
-					ver($ganadores);
 					exit();
 				}
 			}

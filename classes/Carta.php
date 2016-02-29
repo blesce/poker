@@ -11,7 +11,7 @@ class Carta {
 
 	public function getNumero($asMayor = false) {
 
-		if($this->numero === 1) {
+		if($asMayor && $this->numero === 1) {
 			return 14;
 		}
 

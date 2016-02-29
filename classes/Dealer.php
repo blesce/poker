@@ -151,7 +151,12 @@ class Dealer {
 
 		$ganadores = [];
 
-		if(count($candidatos) > 1) {
+		if(count($candidatos) === 1) {
+			$ganadores = $candidatos;
+		} else {
+
+			$candidato = reset($candidatos);
+
 			switch($candidato->getJuego()) {
 
 				case ESCALERA_REAL:
@@ -232,12 +237,12 @@ class Dealer {
 							$carta2 = $last->getMejores()[$i]->getNumero(true);
 
 							if($carta1 !== $carta2) {
+
 								if($carta1 > $carta2) {
 									$ganadores = [$candidato];
 								}
+
 								break;
-							} elseif($carta1 < $carta2) {
-								continue;
 							} elseif($i === 4) {
 								$ganadores[] = $candidato;
 							}
@@ -265,8 +270,6 @@ class Dealer {
 					$ganadores = $candidatos;
 				break;
 			}
-		} else {
-			$ganadores = $candidatos;
 		}
 
 		return $ganadores;
@@ -421,9 +424,9 @@ class Dealer {
 		}
 
 		usort($cartas, function($a, $b) {
-			if($a->getNumero() > $b->getNumero()) {
+			if($a->getNumero(true) > $b->getNumero(true)) {
 				return 1;
-			} elseif($a->getNumero() < $b->getNumero()) {
+			} elseif($a->getNumero(true) < $b->getNumero(true)) {
 				return -1;
 			} elseif($a->getPalo() < $b->getPalo()) {
 				return 1;
@@ -431,10 +434,6 @@ class Dealer {
 				return -1;
 			}
 		});
-
-		while(reset($cartas)->getNumero() === 1) {
-			$cartas[] = array_shift($cartas);
-		}
 
 		$this->cartas = array_reverse($cartas);
 
