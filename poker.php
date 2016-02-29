@@ -49,6 +49,7 @@ while(true) {
 		// echo('<br />');
 	}
 
+	// Hack para debug
 	$last = end($ganadores);
 	if($last->getJuego() === 3) {
 		$ccc = 0;
