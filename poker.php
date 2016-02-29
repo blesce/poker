@@ -51,12 +51,12 @@ while(true) {
 
 	// Hack para debug
 	$last = end($ganadores);
-	if($last->getJuego() === 3) {
-		$ccc = 0;
+	if($last->getJuego() === 4) {
+		$mismoJuego = 0;
 		foreach($jugadores as $jugador) {
-			if($jugador->getJuego() === 3) {
-				$ccc++;
-				if($ccc > 1 && count($ganadores) === 1) {
+			if($jugador->getJuego() === 4) {
+				$mismoJuego++;
+				if($mismoJuego === 4 && count($ganadores) === 2) {
 					ob_end_flush();
 					exit();
 				}

@@ -251,7 +251,24 @@ class Dealer {
 				break;
 
 				case ESCALERA:
-					$ganadores = $candidatos;
+					foreach($candidatos as $candidato) {
+
+						if(!count($ganadores)) {
+							$ganadores[] = $candidato;
+							continue;
+						}
+
+						$last = end($ganadores);
+
+						$carta1 = $candidato->getMejores()[0]->getNumero(true);
+						$carta2 = $last->getMejores()[0]->getNumero(true);
+
+						if($carta1 > $carta2) {
+							$ganadores = [$candidato];
+						} elseif($carta1 === $carta2) {
+							$ganadores[] = $candidato;
+						}
+					}
 				break;
 
 				case PIERNA:
