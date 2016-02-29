@@ -8,48 +8,62 @@ include_once('classes/Jugador.php');
 include_once('classes/Mazo.php');
 include_once('classes/Mesa.php');
 
-$cantidadDeJugadores = 6;
+ob_start();
+while(true) {
 
-try {
-	$mesa = new Mesa($cantidadDeJugadores);
-} catch(Exception $e) {
-	exit($e->getMessage());
-}
+	ob_clean();
 
-$dealer = new Dealer($mesa);
-
-$cartasPorJugador = 2;
-try {
-	$dealer->repartir($cartasPorJugador);
-} catch(Exception $e) {
-	exit($e->getMessage());
-}
-
-$dealer->cartasComunitarias();
-
-$mesa->mostrarCartas();
-
-$jugadores = $mesa->getJugadores();
-foreach($jugadores as $jugador) {
-
-	$cartas = array_merge($mesa->getCartas(), $jugador->getCartas());
-	list($mejores, $juego) = $dealer->elegirMejores($cartas);
-
-	$jugador->mostrarNombre($juego);
-	echo('<br />');
-	$jugador->mostrarCartas();
-	foreach($mejores as $carta) {
-		$carta->ver(true);
-		echo(' ');
+	$cantidadDeJugadores = 6;
+	try {
+		$mesa = new Mesa($cantidadDeJugadores);
+	} catch(Exception $e) {
+		exit($e->getMessage());
 	}
-	echo('<br />');
-	echo('<br />');
+
+	$dealer = new Dealer($mesa);
+
+	$cartasPorJugador = 2;
+	try {
+		$dealer->repartir($cartasPorJugador);
+	} catch(Exception $e) {
+		exit($e->getMessage());
+	}
+
+	$dealer->cartasComunitarias();
+
+	$mesa->mostrarCartas();
+
+	$ganadores = $dealer->buscarGanadores();
+
+	$jugadores = $mesa->getJugadores();
+	foreach($jugadores as $jugador) {
+		$jugador->mostrarNombre(in_array($jugador, $ganadores));
+		echo('<br />');
+		$jugador->mostrarCartas();
+		echo('<br />');
+		// foreach($mejores as $carta) {
+		// 	$carta->ver(true);
+		// 	echo(' ');
+		// }
+		// echo('<br />');
+		// echo('<br />');
+	}
+
+	$last = end($ganadores);
+	if($last->getJuego() === 3) {
+		$ccc = 0;
+		foreach($jugadores as $jugador) {
+			if($jugador->getJuego() === 3) {
+				$ccc++;
+				if($ccc > 1 && count($ganadores) > 1) {
+					ob_end_flush();
+					ver($ganadores);
+					exit();
+				}
+			}
+		}
+	}
 }
-
-// $ganadores = $mesa->buscarGanadores();
-
-// var_dump($ganadores);
-
 
 
 

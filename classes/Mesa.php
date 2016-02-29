@@ -6,17 +6,15 @@ class Mesa {
 
 	public function __construct($cantidadDeJugadores) {
 
-		if($cantidadDeJugadores > 9) {
+		if($cantidadDeJugadores < 2) {
+			throw new Exception('Poca gente');
+		} elseif($cantidadDeJugadores > 9) {
 			throw new Exception('Mucha gente');
 		}
 
 		for($i = 0; $i < $cantidadDeJugadores; $i++) {
 			$this->jugadores[] = new Jugador('Jugador ' . ($i + 1));
 		}
-	}
-
-	public function buscarGanadores() {
-		// Sin implementar
 	}
 
 	public function getCartas() {

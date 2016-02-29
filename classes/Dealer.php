@@ -46,10 +46,9 @@ class Dealer {
 				continue;
 			}
 
-			$numero = $last->getNumero();
+			$numero = $last->getNumero(true);
 
-			if($numero === 1) {
-				$numero = 14;
+			if($numero === 14) {
 				$as = $last;
 			}
 
@@ -119,6 +118,158 @@ class Dealer {
 		}
 
 		return false;
+	}
+
+	public function buscarGanadores() {
+
+		$jugadores = $this->mesa->getJugadores();
+
+		foreach($jugadores as $jugador) {
+			$cartas = array_merge($this->mesa->getCartas(), $jugador->getCartas());
+			list($mejores, $juego) = $this->elegirMejores($cartas);
+			$jugador->setMejores($mejores);
+			$jugador->setJuego($juego);
+		}
+
+		$candidatos = [];
+
+		foreach($jugadores as $jugador) {
+
+			if(!count($candidatos)) {
+				$candidatos[] = $jugador;
+				continue;
+			}
+
+			$candidato = end($candidatos);
+
+			if($jugador->getJuego() < $candidato->getJuego()) {
+				$candidatos = [$jugador];
+			} elseif($jugador->getJuego() === $candidato->getJuego()) {
+				$candidatos[] = $jugador;
+			}
+		}
+
+		$ganadores = [];
+
+		if(count($candidatos) > 1) {
+			switch($candidato->getJuego()) {
+
+				case ESCALERA_REAL:
+					foreach($candidatos as $candidato) {
+
+						if(!count($ganadores)) {
+							$ganadores[] = $candidato;
+							continue;
+						}
+
+						$last = end($ganadores);
+
+						if($candidato->getMejores()[0]->getNumero(true) > $last->getMejores()[0]->getNumero(true)) {
+							$ganadores = [$candidato];
+						} elseif($candidato->getMejores()[0]->getNumero(true) === $last->getMejores()[0]->getNumero(true)) {
+							$ganadores[] = $candidato;
+						}
+					}
+				break;
+
+				case POKER:
+					foreach($candidatos as $candidato) {
+
+						if(!count($ganadores)) {
+							$ganadores[] = $candidato;
+							continue;
+						}
+
+						$last = end($ganadores);
+
+						if($candidato->getMejores()[0]->getNumero(true) > $last->getMejores()[0]->getNumero(true)) {
+							$ganadores = [$candidato];
+						} elseif($candidato->getMejores()[0]->getNumero(true) === $last->getMejores()[0]->getNumero(true)) {
+							if($candidato->getMejores()[4]->getNumero(true) > $last->getMejores()[4]->getNumero(true)) {
+								$ganadores = [$candidato];
+							} elseif($candidato->getMejores()[4]->getNumero(true) === $last->getMejores()[4]->getNumero(true)) {
+								$ganadores[] = $candidato;
+							}
+						}
+					}
+				break;
+
+				case FULL_HOUSE:
+					foreach($candidatos as $candidato) {
+
+						if(!count($ganadores)) {
+							$ganadores[] = $candidato;
+							continue;
+						}
+
+						$last = end($ganadores);
+
+						if($candidato->getMejores()[0]->getNumero(true) > $last->getMejores()[0]->getNumero(true)) {
+							$ganadores = [$candidato];
+						} elseif($candidato->getMejores()[0]->getNumero(true) === $last->getMejores()[0]->getNumero(true)) {
+							if($candidato->getMejores()[3]->getNumero(true) > $last->getMejores()[3]->getNumero(true)) {
+								$ganadores = [$candidato];
+							} elseif($candidato->getMejores()[3]->getNumero(true) === $last->getMejores()[3]->getNumero(true)) {
+								$ganadores[] = $candidato;
+							}
+						}
+					}
+				break;
+
+				case COLOR:
+					foreach($candidatos as $candidato) {
+
+						if(!count($ganadores)) {
+							$ganadores[] = $candidato;
+							continue;
+						}
+
+						$last = end($ganadores);
+
+						for($i = 0; $i < 5; $i++) {
+
+							$carta1 = $candidato->getMejores()[$i]->getNumero(true);
+							$carta2 = $last->getMejores()[$i]->getNumero(true);
+
+							if($carta1 !== $carta2) {
+								if($carta1 > $carta2) {
+									$ganadores = [$candidato];
+								}
+								break;
+							} elseif($carta1 < $carta2) {
+								continue;
+							} elseif($i === 4) {
+								$ganadores[] = $candidato;
+							}
+						}
+					}
+				break;
+
+				case ESCALERA:
+					$ganadores = $candidatos;
+				break;
+
+				case PIERNA:
+					$ganadores = $candidatos;
+				break;
+
+				case PARES:
+					$ganadores = $candidatos;
+				break;
+
+				case PAR:
+					$ganadores = $candidatos;
+				break;
+
+				case CARTA_ALTA:
+					$ganadores = $candidatos;
+				break;
+			}
+		} else {
+			$ganadores = $candidatos;
+		}
+
+		return $ganadores;
 	}
 
 	private function buscarJuego($juego) {
@@ -263,7 +414,7 @@ class Dealer {
 		$this->mesa->recibirCartas($this->mazo->river());
 	}
 
-	public function elegirMejores($cartas) {
+	private function elegirMejores($cartas) {
 
 		if(count($cartas) !== 7) {
 			throw new Exception('No son 7 cartas');

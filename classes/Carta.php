@@ -9,7 +9,12 @@ class Carta {
 		$this->palo = $palo;
 	}
 
-	public function getNumero() {
+	public function getNumero($asMayor = false) {
+
+		if($this->numero === 1) {
+			return 14;
+		}
+
 		return $this->numero;
 	}
 
