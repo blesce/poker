@@ -22,7 +22,7 @@ class Carta {
 		return $this->palo;
 	}
 
-	private function nombrarNumero() {
+	public function nombrarNumero() {
 		switch($this->numero) {
 
 			case 1:

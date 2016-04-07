@@ -16,6 +16,19 @@ class Mazo {
 		}
 	}
 
+	public function dameCarta($crt) {
+
+		foreach($this->cartas as $index => $carta) {
+			if($carta->getNumero() == $crt->getNumero() && $carta->getPalo() == $crt->getPalo()) {
+				unset($this->cartas[$index]);
+				$this->cartas = array_values($this->cartas);
+				return $carta;
+			}
+		}
+
+		return false;
+	}
+
 	public function flop() {
 		return $this->repartir(3);
 	}

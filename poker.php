@@ -8,6 +8,32 @@ include_once('classes/Jugador.php');
 include_once('classes/Mazo.php');
 include_once('classes/Mesa.php');
 
+
+$stats = ['A' => 0];
+for($i = 0; $i < 10000; $i++) {
+
+	$mazo = new Mazo(true);
+	$mazo->dameCarta(new Carta(A, PICA));
+	$mazo->dameCarta(new Carta(A, DIAMANTE));
+	$cartas = $mazo->flop();
+
+	$letras = [];
+	foreach($cartas as $carta) {
+		$letras[] = $carta->nombrarNumero();
+	}
+
+	if(in_array('A', $letras)) {
+		$stats['A']++;
+	}
+
+	// if(in_array('K', $letras) && !in_array('A', $letras)) {
+	// 	$stats['K']++;
+	// }
+}
+ver($stats);
+exit();
+
+
 ob_start();
 while(true) {
 
