@@ -110,8 +110,8 @@ class Dealer {
 
 		if(count($fullHouse)) {
 			foreach($stack as $numero => $cartas) {
-				if(count($cartas) === 2) {
-					$fullHouse = array_merge($fullHouse, $cartas);
+				if(count($cartas) >= 2) {
+					$fullHouse = array_merge($fullHouse, array_slice($cartas, 0, 2));
 					return $fullHouse;
 				}
 			}
